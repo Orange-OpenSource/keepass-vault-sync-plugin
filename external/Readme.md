@@ -1,0 +1,1 @@
+Unzip the portable (https://keepass.info/download.html)[version of Keepass] in external/keepass folder to resolve dependencies
