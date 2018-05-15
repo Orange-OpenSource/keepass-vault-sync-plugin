@@ -4,7 +4,7 @@ Developped at Orange Applications for Business under LGPL-2.1. See [LICENSE](LIC
 
 # How to use
 
-1. Download the PLGX file and copy it in the Keepass installation folder, in plugins directory
+1. Download the [latest PLGX file](https://github.com/Orange-OpenSource/keepass-vault-sync-plugin/releases) and copy it in the Keepass installation folder, in plugins directory
 2. Open your database
 3. Create an entry with name starting with `vault`. For example: `vault-personal-folder`
   * Username is the username used to authenticate
@@ -17,6 +17,13 @@ Developped at Orange Applications for Business under LGPL-2.1. See [LICENSE](LIC
 5. A folder named with your entry name followed by the date and time timestamp will be created. If the entry was previously synchronized, the previous folder won't be deleted.
 6. You can save your database. The plugin won't do it for you.
 7. For now, there is no error message in case of issue. Only the lack of synchronization will be a symptom of issue. It may be improved in future versions. If needed.
+
+# Why these release names?
+
+* Because release themes are cheap but are a small pleasure in release process
+* Because it helps structuring releases
+* Because why not?
+* Because [Vault](https://en.wikipedia.org/wiki/Vault_\(comics\)), so [Release Theme](https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Super-vilain_Marvel)
 
 # How to build
 
