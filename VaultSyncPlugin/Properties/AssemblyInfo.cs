@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("VaultSyncPlugin")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Synchronizes Vault secrets in the local database. Licensed under LGPL-2.1")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Orange Application for Business (LGPL-2.1)")]
+[assembly: AssemblyCompany("Orange Application for Business")]
 [assembly: AssemblyProduct("KeePass Plugin")]
 [assembly: AssemblyCopyright("Copyright © Orange Application for Business 2018")]
 [assembly: AssemblyTrademark("")]
