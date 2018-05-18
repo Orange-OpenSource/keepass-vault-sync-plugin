@@ -40,6 +40,8 @@ Since it contains sensitive data, this file is gitignored. But you should check 
 
 # Library used
 
-* Keepass for plugin API
-* [Vault.NET](https://github.com/Chatham/Vault.NET) for Vault API C# wrapping
-* [PlgxTool](https://github.com/dlech/KeePassPluginDevTools) for PLGX generation
+* [Keepass](https://keepass.info) for plugin API (GPL-2.0)
+* [Vault.NET](https://github.com/Chatham/Vault.NET) for Vault API C# wrapping (MIT)
+* [PlgxTool](https://github.com/dlech/KeePassPluginDevTools) for PLGX generation (GPL-2.0)
+* [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) as dependency of Vault.NET (MIT)
+* A bunch of .NET extension libraries, as dependencies of dependencies, from .NET framework 4.6 or Microsoft libraries on nuget (Apache 2 and MIT, depends on the lib/framework)
