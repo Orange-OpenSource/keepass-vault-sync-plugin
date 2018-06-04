@@ -4,7 +4,7 @@ Developped at Orange Applications for Business under LGPL-2.1. See [LICENSE](LIC
 
 # How to use
 
-1. Download the [latest PLGX file](https://github.com/Orange-OpenSource/keepass-vault-sync-plugin/releases) and copy it in the Keepass installation folder, in plugins directory
+1. Download the [latest PLGX file](https://github.com/Orange-OpenSource/keepass-vault-sync-plugin/releases) and copy it in the KeePass installation folder, in plugins directory
 2. Open your database
 3. Create an entry with name starting with `vault`. For example: `vault-personal-folder`
     * Username is the username used to authenticate on Vault
@@ -40,7 +40,7 @@ Since it contains sensitive data, this file is gitignored. But you should check 
 
 # Library used
 
-* [Keepass](https://keepass.info) for plugin API (GPL-2.0)
+* [KeePass](https://keepass.info) for plugin API (GPL-2.0)
 * [Vault.NET](https://github.com/Chatham/Vault.NET) for Vault API C# wrapping (MIT)
 * [PlgxTool](https://github.com/dlech/KeePassPluginDevTools) for PLGX generation (GPL-2.0)
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) as dependency of Vault.NET (MIT)
