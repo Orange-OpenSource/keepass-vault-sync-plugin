@@ -4,6 +4,14 @@ Developped at Orange Applications for Business under LGPL-2.1. See [LICENSE](LIC
 
 # How to use
 
+## Pre-requisites
+
+This plugin requires .NET Framework 4.6 minimum, you can download the latest version from [Microsoft website](https://dotnet.microsoft.com/download).
+
+For Linux users, you need to install the latest `mono-complete` package.
+
+## Usage
+
 1. Download the [latest PLGX file](https://github.com/Orange-OpenSource/keepass-vault-sync-plugin/releases) and copy it in the KeePass installation folder, in plugins directory
 2. Open your database
 3. Create an entry with name starting with `vault`. For example: `vault-personal-folder`
@@ -31,6 +39,8 @@ Developped at Orange Applications for Business under LGPL-2.1. See [LICENSE](LIC
 1. Modify the version in both AssemblyInfo and KeepassPluginVersion.txt
 1. Build the solution, targetting `Release PLGX`
 1. The file is generated in VaultSyncPlugin/bin/ReleasePlgx/VaultSyncPlugin.plgx
+
+For some reason, the execution of plgxtool can fail. The quick workaround consists in running the command directly in bash from the VaultSyncPlugin project folder.
 
 # How to test
 

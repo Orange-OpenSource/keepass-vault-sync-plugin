@@ -55,7 +55,6 @@
     <PlgxConfiguration>
       <Prerequisites>
         <KeePassVersion>2.19</KeePassVersion>
-        <DotNetVersion>4.5</DotNetVersion>
       </Prerequisites>
     </PlgxConfiguration>
   </PropertyGroup>
