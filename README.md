@@ -1,6 +1,6 @@
 # License
 
-Developped at Orange Applications for Business under LGPL-2.1. See [LICENSE](LICENSE).
+Developped at Orange Business Services under LGPL-2.1. See [LICENSE](LICENSE).
 
 # How to use
 

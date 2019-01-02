@@ -1,5 +1,5 @@
 ﻿//    Keepass Vault Sync Plugin
-//    Copyright (C) 2018 Orange Applications for Business
+//    Copyright (C) 2018 Orange Business Services
 //
 //    This library is free software; you can redistribute it and/or
 //    modify it under the terms of the GNU Lesser General Public
