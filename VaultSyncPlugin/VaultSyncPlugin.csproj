@@ -165,9 +165,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)packages\PlgxTool.1.0.0\tools\PlgxTool.exe" --build --verbose --input="$(ProjectDir.TrimEnd('\'))" --output="$(TargetDir.TrimEnd('\'))" --config="$(ProjectDir)\PlgxConfig.xml"</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
