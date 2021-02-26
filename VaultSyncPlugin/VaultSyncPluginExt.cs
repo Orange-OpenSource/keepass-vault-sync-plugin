@@ -40,6 +40,8 @@ namespace VaultSyncPlugin
         private IPluginHost host = null;
         private ToolStripSeparator separator;
         private ToolStripMenuItem menuItem;
+        private SyncStatus syncStatus;
+        private SyncStatusForm syncStatusForm;
 
         /// <summary>
         /// Override UpdateUrl for update checking
@@ -77,6 +79,9 @@ namespace VaultSyncPlugin
             this.menuItem.Text = "Synchronize Vault entries";
             this.menuItem.Click += this.OnMenuItemClick;
             menuItemCollection.Add(this.menuItem);
+
+            this.syncStatus = new SyncStatus();
+            this.syncStatusForm = new SyncStatusForm(this.syncStatus);
 
             return true;
         }
@@ -123,6 +128,8 @@ namespace VaultSyncPlugin
         /// </summary>
         private void DoTheStuffAsync()
         {
+            this.syncStatusForm.Show();
+
             Task.Run(() =>
             {
                 // We synchronize vault entries
@@ -146,8 +153,10 @@ namespace VaultSyncPlugin
             foreach (var entry in group.Entries)
             {
                 // If entry starts with "vault" it is considered vault entry to synchronize
-                if (this.IsVaultEntry(this.GetKeepassEntryProperty(entry, PwDefs.TitleField)))
+                var name = this.GetKeepassEntryProperty(entry, PwDefs.TitleField);
+                if (this.IsVaultEntry(name))
                 {
+                    this.syncStatus.AddLog(string.Format("Found vault entry {0}", name));
                     this.SynchronizeVaultEntry(entry);
                 }
             }
@@ -189,9 +198,14 @@ namespace VaultSyncPlugin
                 // Download secrets
                 var secrets = this.DownloadSecrets(this.GetSyncGroupName(entryName), vaultUrl, vaultAuthPath, vaultLogin, vaultPassword, vaultPath);
 
+                this.syncStatus.AddLog("Secrets fetched, will now inject them in the database");
+
                 // Create new sync group to synchronize data.
                 var newGroup = this.CreateGroup(this.GetSyncGroupName(entryName), secrets, group.IconId);
+
                 group.AddGroup(newGroup, true);
+
+                this.syncStatus.AddLog("Done.");
             }
         }
 
@@ -266,8 +280,9 @@ namespace VaultSyncPlugin
             string vaultPassword,
             string vaultPath)
         {
-            var client = new SynchronousVaultClient(new Uri(vaultUrl), vaultAuthPath, vaultUsername, vaultPassword);
-            return client.GetSecrets(vaultPath).Result;
+            var client = new SynchronousVaultClient(new Uri(vaultUrl), vaultAuthPath, vaultUsername, vaultPassword, this.syncStatus);
+            var secretFolder = client.GetSecrets(vaultPath).Result;
+            return secretFolder;
         }
 
         /// <summary>

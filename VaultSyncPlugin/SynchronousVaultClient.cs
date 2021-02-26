@@ -36,6 +36,7 @@ namespace VaultSyncPlugin
     public class SynchronousVaultClient
     {
         VaultClient client;
+        private SyncStatus syncStatus;
         private string authPath;
         private string vaultLogin;
         private string vaultPassword;
@@ -48,7 +49,7 @@ namespace VaultSyncPlugin
         /// <param name="authPath">The Vault auth path. Can be userpass for standard auth method, or the LDAP path in case of LDAP auth.</param>
         /// <param name="vaultLogin">The login</param>
         /// <param name="vaultPassword">The password</param>
-        public SynchronousVaultClient(Uri vaultUrl, string authPath, string vaultLogin, string vaultPassword)
+        public SynchronousVaultClient(Uri vaultUrl, string authPath, string vaultLogin, string vaultPassword, SyncStatus syncStatus)
         {
             // Disable SSL checks, for self-signed certificates.
             // TODO could be a plugin setting
@@ -60,6 +61,7 @@ namespace VaultSyncPlugin
             this.vaultLogin = vaultLogin;
             this.vaultPassword = vaultPassword;
             this.client = new VaultClient(vaultUrl);
+            this.syncStatus = syncStatus;
         }
 
         /// <summary>
@@ -72,17 +74,24 @@ namespace VaultSyncPlugin
             var folder = new SecretFolder(this.GetLastFolder(path));
 
             // Gets the list of secrets for this path
-            IEnumerable<string> keyList = new List<string>(); ;
+            SecretKeys keyList;
             try
             {
                 keyList = await this.GetSecretList(path);
             }
             catch (VaultRequestException ex)
             {
-                // May be connection issue, or forbidden. We just continue.
+                // May be connection issue, or forbidden. We just continue, but we store the error for future display
+                this.syncStatus.AddLog(string.Format("Exception: {0}{1}{2}", ex.Message, Environment.NewLine, ex.StackTrace));
+                return folder;
             }
 
-            foreach (var key in keyList)
+            if (keyList.Keys.Count() > 0)
+            {
+                this.syncStatus.AddLog(string.Format("{0} keys fetched in {1}", keyList.Keys.Count(), path));
+            }
+
+            foreach (var key in keyList.Keys)
             {
                 if (SecretFolder.IsFolder(key))
                 {
@@ -96,6 +105,11 @@ namespace VaultSyncPlugin
                 }
             }
 
+            if (folder.Secrets.Count() > 0)
+            {
+                this.syncStatus.AddLog(string.Format("{0} secrets fetched in {1}", folder.Secrets.Count(), path));
+            }
+
             return folder;
         }
 
@@ -104,17 +118,25 @@ namespace VaultSyncPlugin
         /// </summary>
         /// <param name="path">The path (after .../v1/secret/')</param>
         /// <returns>The secret list.</returns>
-        private async Task<List<string>> GetSecretList(string path)
+        private async Task<SecretKeys> GetSecretList(string path)
         {
             try
             {
                 this.CheckToken();
-                return await Task.FromResult(client.Secret.List(path).Result.Data.Keys);
+                return await Task.FromResult(new SecretKeys(client.Secret.List(path).Result.Data.Keys));
             }
             catch (Exception ex)
             {
                 // May be unauthorized access
-                return new List<string>();
+                if (ex.InnerException.Message.Contains("status code Forbidden"))
+                {
+                    this.syncStatus.AddLog(string.Format("Access to {0} forbidden", path));
+                }
+                else
+                {
+                    this.syncStatus.AddLog(string.Format("Exception: {0}{1}{2}", ex.InnerException.Message, Environment.NewLine, ex.InnerException.StackTrace));
+                }
+                return new SecretKeys(new List<string>());
             }
         }
 
@@ -166,6 +188,7 @@ namespace VaultSyncPlugin
             catch (Exception ex)
             {
                 // Creates the entry with the exception message. Could help analyzing when failing.
+                this.syncStatus.AddLog(string.Format("Exception: {0}{1}{2}", ex.InnerException.Message, Environment.NewLine, ex.InnerException.StackTrace));
                 secret = new Secret(this.GetLastFolder(path), ex.Message, string.Empty, new Dictionary<string, string>());
             }
 

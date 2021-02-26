@@ -73,7 +73,7 @@ namespace VaultSyncPlugin.IntegrationTests
                 Check.That(structure.Folders.Count()).IsStrictlyGreaterThan(0);
                 Check.That(structure.Secrets.Count()).IsStrictlyGreaterThan(0);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Assert.Fail(@"Access failed. You should check that your credentials are valid.");
             }
