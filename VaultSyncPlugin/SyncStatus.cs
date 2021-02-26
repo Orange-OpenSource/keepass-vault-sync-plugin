@@ -7,27 +7,13 @@ using System.Threading.Tasks;
 
 namespace VaultSyncPlugin
 {
-    public class SyncStatus : INotifyPropertyChanged
+    public class SyncStatus
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler<string> NewLog;
 
         public event EventHandler Started;
 
         public event EventHandler Ended;
-
-        private string logs = string.Empty;
-
-        public string Logs { 
-            get { return this.logs; }
-            private set
-            {
-                this.logs = value;
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("Logs"));
-                }
-            }
-        }
 
         public void StartSync()
         {
@@ -47,7 +33,10 @@ namespace VaultSyncPlugin
 
         public void AddLog(string log)
         {
-            this.Logs = this.Logs + Environment.NewLine + log;
+            if (this.NewLog != null)
+            {
+                this.NewLog(this, log);
+            }
         }
     }
 }

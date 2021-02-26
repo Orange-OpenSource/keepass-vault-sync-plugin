@@ -34,13 +34,6 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup>
-    <PlgxConfiguration>
-      <Prerequisites>
-        <KeePassVersion>2.19</KeePassVersion>
-      </Prerequisites>
-    </PlgxConfiguration>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release PLGX|AnyCPU'">
     <OutputPath>bin\Release PLGX\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -172,17 +165,16 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>"$(SolutionDir)packages\PlgxTool.1.0.0\tools\PlgxTool.exe" --build --verbose --input="$(ProjectDir.TrimEnd('\'))" --output="$(TargetDir.TrimEnd('\'))" --config="$(ProjectDir)\PlgxConfig.xml"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
-  <Target Name="AfterBuild" Condition="'$(Configuration)' == 'ReleasePlgx'">
+  <!--<Target Name="AfterBuild" Condition="'$(Configuration)' == 'Release PLGX'">
     <CallTarget Targets="BuildPlgx" />
     <Delete Files="$(TargetPath)" />
-  </Target>
+  </Target>-->
   <Import Project="..\packages\PlgxTool.1.0.0\build\PlgxTool.targets" Condition="Exists('..\packages\PlgxTool.1.0.0\build\PlgxTool.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

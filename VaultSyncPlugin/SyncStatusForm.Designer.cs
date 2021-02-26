@@ -82,7 +82,7 @@ namespace VaultSyncPlugin
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.panel1);
             this.Name = "SyncStatusForm";
-            this.Text = "SyncStatusForm";
+            this.Text = "Vault Sync Status";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);

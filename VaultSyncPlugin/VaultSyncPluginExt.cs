@@ -81,7 +81,6 @@ namespace VaultSyncPlugin
             menuItemCollection.Add(this.menuItem);
 
             this.syncStatus = new SyncStatus();
-            this.syncStatusForm = new SyncStatusForm(this.syncStatus);
 
             return true;
         }
@@ -128,10 +127,17 @@ namespace VaultSyncPlugin
         /// </summary>
         private void DoTheStuffAsync()
         {
+            if (this.syncStatusForm == null)
+            {
+                this.syncStatusForm = new SyncStatusForm(this.syncStatus);
+            }
+            
             this.syncStatusForm.Show();
 
             Task.Run(() =>
             {
+                this.syncStatus.StartSync();
+
                 // We synchronize vault entries
                 this.SynchronizeVaultEntries(this.host.Database.RootGroup);
 
@@ -141,6 +147,8 @@ namespace VaultSyncPlugin
                 this.ExecuteInGuiThread(new Action(() => { this.host.MainWindow.UpdateUI(false, null, true, this.host.Database.RootGroup, true, null, true); }));
 
                 // NOTE: We don't automatically save the database
+
+                this.syncStatus.StopSync();
             });
         }
 
@@ -228,6 +236,7 @@ namespace VaultSyncPlugin
                 // Avoids having a lot of empty folders we don't have access to in Vault
                 if (subFolder.Folders.Count() > 0 || subFolder.Secrets.Count() > 0)
                 {
+                    this.syncStatus.AddLog(string.Format("Create group {0} in {1}", subFolder.Name, groupName));
                     var subGroup = this.CreateGroup(subFolder.Name, subFolder, icon);
                     group.AddGroup(subGroup, true);
                 }
@@ -236,6 +245,7 @@ namespace VaultSyncPlugin
             // Create entries at this level
             foreach (var secret in secrets.Secrets)
             {
+                this.syncStatus.AddLog(string.Format("Create entry {0} in {1}", secret.Name, groupName));
                 var entry = this.CreateEntry(secret);
                 group.AddEntry(entry, true);
             }
@@ -252,12 +262,24 @@ namespace VaultSyncPlugin
         {
             var entry = new PwEntry(true, true);
             entry.Strings.Set(PwDefs.TitleField, new ProtectedString(false, secret.Name));
-            entry.Strings.Set(PwDefs.UserNameField, new ProtectedString(false, secret.User));
-            entry.Strings.Set(PwDefs.PasswordField, new ProtectedString(false, secret.Password));
-            entry.Strings.Set(PwDefs.UrlField, new ProtectedString(false, secret.Url));
+            if (!string.IsNullOrEmpty(secret.User))
+            {
+                entry.Strings.Set(PwDefs.UserNameField, new ProtectedString(false, secret.User));
+            }
+            if (!string.IsNullOrEmpty(secret.Password))
+            {
+                entry.Strings.Set(PwDefs.PasswordField, new ProtectedString(false, secret.Password));
+            }
+            if (!string.IsNullOrEmpty(secret.Url))
+            {
+                entry.Strings.Set(PwDefs.UrlField, new ProtectedString(false, secret.Url));
+            }
             foreach (var item in secret.Content)
             {
-                entry.Strings.Set(item.Key, new ProtectedString(false, item.Value));
+                if (!string.IsNullOrEmpty(item.Value))
+                {
+                    entry.Strings.Set(item.Key, new ProtectedString(false, item.Value));
+                }
             }
             return entry;
         }

@@ -33,6 +33,7 @@ namespace VaultSyncPlugin.IntegrationTests
     public class SynchronousVaultClientTests
     {
         private TestSettings settings;
+        private SyncStatus syncStatus;
 
         [SetUp]
         public void Setup()
@@ -43,6 +44,7 @@ namespace VaultSyncPlugin.IntegrationTests
             {
                 var configuration = File.ReadAllText(file);
                 this.settings = JsonConvert.DeserializeObject<TestSettings>(configuration);
+                this.syncStatus = new SyncStatus();
             }
             else
             {
@@ -65,7 +67,7 @@ namespace VaultSyncPlugin.IntegrationTests
         [Test]
         public void Top_level_access_should_be_OK_by_credentials()
         {
-            var client = new SynchronousVaultClient(new Uri(this.settings.VaultUrl), this.settings.AuthPath, this.settings.User, this.settings.Password);
+            var client = new SynchronousVaultClient(new Uri(this.settings.VaultUrl), this.settings.AuthPath, this.settings.User, this.settings.Password, this.syncStatus);
             SecretFolder structure;
             try
             {

@@ -82,7 +82,7 @@ namespace VaultSyncPlugin
             catch (VaultRequestException ex)
             {
                 // May be connection issue, or forbidden. We just continue, but we store the error for future display
-                this.syncStatus.AddLog(string.Format("Exception: {0}{1}{2}", ex.Message, Environment.NewLine, ex.StackTrace));
+                this.syncStatus.AddLog(string.Format("Exception for {0}: {1}{2}{3}", path, ex.Message, Environment.NewLine, ex.StackTrace));
                 return folder;
             }
 
@@ -134,7 +134,7 @@ namespace VaultSyncPlugin
                 }
                 else
                 {
-                    this.syncStatus.AddLog(string.Format("Exception: {0}{1}{2}", ex.InnerException.Message, Environment.NewLine, ex.InnerException.StackTrace));
+                    this.syncStatus.AddLog(string.Format("Exception for {0}: {1}{2}{3}", path, ex.InnerException.Message, Environment.NewLine, ex.InnerException.StackTrace));
                 }
                 return new SecretKeys(new List<string>());
             }
@@ -188,8 +188,8 @@ namespace VaultSyncPlugin
             catch (Exception ex)
             {
                 // Creates the entry with the exception message. Could help analyzing when failing.
-                this.syncStatus.AddLog(string.Format("Exception: {0}{1}{2}", ex.InnerException.Message, Environment.NewLine, ex.InnerException.StackTrace));
-                secret = new Secret(this.GetLastFolder(path), ex.Message, string.Empty, new Dictionary<string, string>());
+                this.syncStatus.AddLog(string.Format("Exception for {0}: {1}{2}{3}", path, ex.InnerException.Message, Environment.NewLine, ex.InnerException.StackTrace));
+                secret = new Secret(this.GetLastFolder(path), string.Empty, string.Empty, new Dictionary<string, string>());
             }
 
             return secret;

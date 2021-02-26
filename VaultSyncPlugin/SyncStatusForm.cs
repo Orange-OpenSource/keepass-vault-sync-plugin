@@ -19,13 +19,17 @@ namespace VaultSyncPlugin
             this.syncStatus = syncStatus;
             InitializeComponent();
 
-            this.logBox.DataBindings.Add("Text",
-                            this.syncStatus,
-                            "Logs",
-                            false,
-                            DataSourceUpdateMode.OnPropertyChanged);
+            this.syncStatus.NewLog += SyncStatus_NewLog;
             this.syncStatus.Started += SyncStatus_Started;
             this.syncStatus.Ended += SyncStatus_Ended;
+
+            this.progressBar.MarqueeAnimationSpeed = 30;
+        }
+
+        private void SyncStatus_NewLog(object sender, string log)
+        {
+            this.logBox.AppendText(log);
+            this.logBox.AppendText(Environment.NewLine);
         }
 
         private void SyncStatus_Ended(object sender, EventArgs e)
