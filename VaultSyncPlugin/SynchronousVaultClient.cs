@@ -37,6 +37,7 @@ namespace VaultSyncPlugin
     {
         VaultClient client;
         private SyncStatus syncStatus;
+        private Uri vaultUrl;
         private string authPath;
         private string vaultLogin;
         private string vaultPassword;
@@ -57,6 +58,7 @@ namespace VaultSyncPlugin
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
+            this.vaultUrl = vaultUrl;
             this.authPath = authPath;
             this.vaultLogin = vaultLogin;
             this.vaultPassword = vaultPassword;
@@ -148,6 +150,7 @@ namespace VaultSyncPlugin
             if (string.IsNullOrEmpty(this.token))
             {
                 this.token = this.GetToken(this.authPath, this.vaultLogin, this.vaultPassword).Result;
+                this.syncStatus.AddLog(string.Format("Authenticated with token {0}", this.token));
                 this.client.Token = this.token;
             }
 
@@ -168,7 +171,17 @@ namespace VaultSyncPlugin
                 Password = password
             };
 
-            return await Task.FromResult<string>(client.Auth.Write<LoginRequest, NoData>(authPath + "/login/" + user, loginRequest).Result.Auth.ClientToken);
+            this.syncStatus.AddLog(string.Format("Trying to authenticate to {0}{1} with user {2}", this.vaultUrl, authPath + "/login/", user));
+
+            try
+            {
+                return await Task.FromResult<string>(client.Auth.Write<LoginRequest, NoData>(authPath + "/login/" + user, loginRequest).Result.Auth.ClientToken);
+            }
+            catch (Exception ex)
+            {
+                this.syncStatus.AddLog(string.Format("Error on authentication: {0}{1}{2}", ex.InnerException.Message, Environment.NewLine, ex.InnerException.StackTrace));
+                throw ex;
+            }
         }
 
         /// <summary>
